@@ -3,7 +3,7 @@
 
 AddElementTag("database", $bgColor="lightSkyBlue")
 AddElementTag("microservice", $bgColor="CornflowerBlue")
-AddElementTag("eventBus", $bgColor="Green")
+AddElementTag("messageBroker", $bgColor="Green")
 
 Person(user, "Пользователь", "Любой человек, пользующийся системой")
 Person(mod, "Модератор", "Пользователь, наделенный правами на модерацию контента")
@@ -40,7 +40,7 @@ System_Boundary(system, "Система"){
     ContainerDb(reportDB, "База данных жалоб")
     ContainerDb(preferencesDB, "База данных предпочтений")
 
-    Container(eventBus, "Event bus", "Container: Event broker", $tags="eventBus")
+    Container(messageBroker, "Брокер сообщений", "Container: Message broker", $tags="messageBroker")
 }
 
 Rel(user, webApp, "")
