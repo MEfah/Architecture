@@ -1,10 +1,16 @@
 @startuml context
-!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+AddElementTag("database", $bgColor="lightSkyBlue")
+AddElementTag("microservice", $bgColor="CornflowerBlue")
+AddElementTag("eventBus", $bgColor="Green")
 
 Person(user, "Пользователь", "Любой человек, пользующийся системой")
 Person(mod, "Модератор", "Пользователь, наделенный правами на модерацию контента")
 Person(admin, "Администратор", "Внутренний пользователь с правами на администрирование системы")
 System_Ext(externalSystems, "Внешние системы", "Внешние системы, которые получают доступ к результатам опросов через API")
+
+
 
 System_Boundary(system, "Система"){
     Container(webApp, "Веб-приложение", "Container: SPA")
@@ -17,15 +23,15 @@ System_Boundary(system, "Система"){
     Container(adminAPI, "API администратора", "Container: gateway")
     Container(extAPI, "API внеш. систем", "Container: gateway")
 
-    Container(authService, "Сервис аутентификации", "Container: микросервис")
-    Container(publicationService, "Сервис публикаций", "Container: микросервис")
-    Container(modService, "Сервис модерации", "Container: микросервис")
-    Container(adminService, "Сервис администрирования", "Container: микросервис")
-    Container(contentBrowsingService, "Сервис поиска и рекоммендаций", "Container: микросервис")
-    Container(surveyResultService, "Сервис результатов опросов", "Container: микросервис")
-    Container(analyticsService, "Сервис аналитики", "Container: микросервис")
-    Container(commentsService, "Сервис комментариев", "Container: микросервис")
-    Container(reportService, "Сервис жалоб", "Container: микросервис")
+    Container(authService, "Сервис аутентификации", "Container: микросервис", "Создание пользователей, авторизация и аутентификация", $tags="microservice")
+    Container(publicationService, "Сервис публикаций", "Container: микросервис", "Создание, просмотр публикаций", $tags="microservice")
+    Container(modService, "Сервис модерации", "Container: микросервис", "Блокировка публикаций и пользователей", $tags="microservice")
+    Container(adminService, "Сервис администрирования", "Container: микросервис", "Выдача спец. прав пользователям", $tags="microservice")
+    Container(contentBrowsingService, "Сервис поиска и рекоммендаций", "Container: микросервис", "Поиск, фильтрация, расчет рекоммендаций. Учет предпочтений пользователей", $tags="microservice")
+    Container(surveyResultService, "Сервис результатов опросов", "Container: микросервис", "Запись и чтение результатов опросов, выгрузка в файл", $tags="microservice")
+    Container(analyticsService, "Сервис аналитики", "Container: микросервис", "Обработка результатов опросов", $tags="microservice")
+    Container(commentsService, "Сервис комментариев", "Container: микросервис", "Добавление и просмотр комментариев", $tags="microservice")
+    Container(reportService, "Сервис жалоб", "Container: микросервис", "Добавление, просмотр жалоб. Оспаривание жалоб", $tags="microservice")
 
     ContainerDb(userDB, "База данных пользователей")
     ContainerDb(publicationDB, "База данных публикаций")
@@ -33,6 +39,8 @@ System_Boundary(system, "Система"){
     ContainerDb(commentsDB, "База данных комментариев")
     ContainerDb(reportDB, "База данных жалоб")
     ContainerDb(preferencesDB, "База данных предпочтений")
+
+    Container(eventBus, "Event bus", "Container: Event broker", $tags="eventBus")
 }
 
 Rel(user, webApp, "")
@@ -62,6 +70,7 @@ Rel(modAPI, commentsService, "")
 
 Rel(adminAPI, authService, "")
 Rel(adminAPI, adminService, "")
+Rel(adminAPI, modService, "")
 
 Rel(extAPI, surveyResultService, "")
 
@@ -74,4 +83,20 @@ Rel(analyticsService, surverResultDB, "")
 Rel(commentsService, commentsDB, "")
 Rel(reportService, reportDB, "")
 Rel(contentBrowsingService, preferencesDB, "")
+
+Rel(modService, userDB, "")
+Rel(modService, publicationDB, "")
+
+Rel(adminService, userDB, "")
+
+
+
+Container(publicationService, "Сервис публикаций", "Container: микросервис", "Создание, просмотр публикаций", $tags="microservice")
+Container(modService, "Сервис модерации", "Container: микросервис", "Блокировка публикаций и пользователей", $tags="microservice")
+Container(adminService, "Сервис администрирования", "Container: микросервис", "Выдача спец. прав пользователям", $tags="microservice")
+Container(contentBrowsingService, "Сервис поиска и рекоммендаций", "Container: микросервис", "Поиск, фильтрация, расчет рекоммендаций. Учет предпочтений пользователей", $tags="microservice")
+Container(surveyResultService, "Сервис результатов опросов", "Container: микросервис", "Запись и чтение результатов опросов, выгрузка в файл", $tags="microservice")
+Container(analyticsService, "Сервис аналитики", "Container: микросервис", "Обработка результатов запросов", $tags="microservice")
+Container(commentsService, "Сервис комментариев", "Container: микросервис", "Добавление и просмотр комментариев", $tags="microservice")
+Container(reportService, "Сервис жалоб", "Container: микросервис", "Добавление, просмотр жалоб. Оспаривание жалоб", $tags="microservice")
 @enduml
