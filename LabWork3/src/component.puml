@@ -1,0 +1,38 @@
+@startuml context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+AddElementTag("database", $bgColor="lightSkyBlue")
+AddElementTag("microservice", $bgColor="CornflowerBlue")
+AddElementTag("messageBroker", $bgColor="Green")
+
+Container(userAPI, "API пользователя", "Container: gateway")
+Container(modAPI, "API модератора", "Container: gateway")
+Container(adminAPI, "API администратора", "Container: gateway")
+
+Container(messageBroker, "Брокер сообщений", "Container: Message broker", $tags="messageBroker")
+
+Container_Boundary(authService, "Сервис аутентификации", "Container: микросервис", "Создание пользователей, авторизация и аутентификация", $tags="microservice"){
+
+    Component(authComp, "Компонент аутентификации и авторизации")
+    Component(rightsComp, "Компонент регулирования прав")
+    Component(dataComp, "Подсервис доступа к данным")
+}
+
+ContainerDb(userDB, "База данных пользователей")
+
+Rel(userAPI, authComp, "")
+Rel(modAPI, authComp, "")
+Rel(adminAPI, authComp, "")
+
+Rel(authComp, messageBroker, "")
+Rel(rightsComp, messageBroker, "")
+
+Rel(modAPI, rightsComp, "")
+Rel(adminAPI, rightsComp, "")
+
+Rel(authComp, dataComp, "")
+Rel(rightsComp, dataComp, "")
+
+Rel(dataComp, userDB, "")
+
+@enduml
