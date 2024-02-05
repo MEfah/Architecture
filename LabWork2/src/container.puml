@@ -1,0 +1,102 @@
+@startuml context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+AddElementTag("database", $bgColor="lightSkyBlue")
+AddElementTag("microservice", $bgColor="CornflowerBlue")
+AddElementTag("messageBroker", $bgColor="Green")
+
+Person(user, "Пользователь", "Любой человек, пользующийся системой")
+Person(mod, "Модератор", "Пользователь, наделенный правами на модерацию контента")
+Person(admin, "Администратор", "Внутренний пользователь с правами на администрирование системы")
+System_Ext(externalSystems, "Внешние системы", "Внешние системы, которые получают доступ к результатам опросов через API")
+
+
+
+System_Boundary(system, "Система"){
+    Container(webApp, "Веб-приложение", "Container: SPA")
+    Container(mobileApp, "Мобильное приложение", "Container: IOS или Android приложение")
+    Container(adminPortal, "Портал администратора", "Container: SPA")
+    Container(modPortal, "Портал администратора", "Container: SPA")
+    
+    Container(userAPI, "API пользователя", "Container: gateway")
+    Container(modAPI, "API модератора", "Container: gateway")
+    Container(adminAPI, "API администратора", "Container: gateway")
+    Container(extAPI, "API внеш. систем", "Container: gateway")
+
+    Container(authService, "Сервис аутентификации", "Container: микросервис", "Создание пользователей, авторизация и аутентификация", $tags="microservice")
+    Container(publicationService, "Сервис публикаций", "Container: микросервис", "Создание, просмотр публикаций", $tags="microservice")
+    Container(modService, "Сервис модерации", "Container: микросервис", "Блокировка публикаций и пользователей", $tags="microservice")
+    Container(adminService, "Сервис администрирования", "Container: микросервис", "Выдача спец. прав пользователям", $tags="microservice")
+    Container(contentBrowsingService, "Сервис поиска и рекоммендаций", "Container: микросервис", "Поиск, фильтрация, расчет рекоммендаций. Учет предпочтений пользователей", $tags="microservice")
+    Container(surveyResultService, "Сервис результатов опросов", "Container: микросервис", "Запись и чтение результатов опросов, выгрузка в файл", $tags="microservice")
+    Container(analyticsService, "Сервис аналитики", "Container: микросервис", "Обработка результатов опросов", $tags="microservice")
+    Container(commentsService, "Сервис комментариев", "Container: микросервис", "Добавление и просмотр комментариев", $tags="microservice")
+    Container(reportService, "Сервис жалоб", "Container: микросервис", "Добавление, просмотр жалоб. Оспаривание жалоб", $tags="microservice")
+
+    ContainerDb(userDB, "База данных пользователей")
+    ContainerDb(publicationDB, "База данных публикаций")
+    ContainerDb(surverResultDB, "База данных результатов опросов")
+    ContainerDb(commentsDB, "База данных комментариев")
+    ContainerDb(reportDB, "База данных жалоб")
+    ContainerDb(preferencesDB, "База данных предпочтений")
+
+    Container(messageBroker, "Брокер сообщений", "Container: Message broker", $tags="messageBroker")
+}
+
+Rel(user, webApp, "")
+Rel(user, mobileApp, "")
+Rel(mod, modPortal, "")
+Rel(admin, adminPortal, "")
+
+Rel(webApp, userAPI, "")
+Rel(mobileApp, userAPI, "")
+Rel(modPortal, modAPI, "")
+Rel(adminPortal, adminAPI, "")
+Rel(externalSystems, extAPI, "")
+
+Rel(userAPI, authService, "")
+Rel(userAPI, publicationService, "")
+Rel(userAPI, contentBrowsingService, "")
+Rel(userAPI, surveyResultService, "")
+Rel(userAPI, analyticsService, "")
+Rel(userAPI, commentsService, "")
+Rel(userAPI, reportService, "")
+
+Rel(modAPI, authService, "")
+Rel(modAPI, modService, "")
+Rel(modAPI, reportService, "")
+Rel(modAPI, publicationService, "")
+Rel(modAPI, commentsService, "")
+
+Rel(adminAPI, authService, "")
+Rel(adminAPI, adminService, "")
+Rel(adminAPI, modService, "")
+
+Rel(extAPI, surveyResultService, "")
+
+Rel(authService, userDB, "")
+Rel(publicationService, publicationDB, "")
+
+Rel(surveyResultService, surverResultDB, "")
+Rel(analyticsService, surverResultDB, "")
+
+Rel(commentsService, commentsDB, "")
+Rel(reportService, reportDB, "")
+Rel(contentBrowsingService, preferencesDB, "")
+
+Rel(modService, userDB, "")
+Rel(modService, publicationDB, "")
+
+Rel(adminService, userDB, "")
+
+
+
+Container(publicationService, "Сервис публикаций", "Container: микросервис", "Создание, просмотр публикаций", $tags="microservice")
+Container(modService, "Сервис модерации", "Container: микросервис", "Блокировка публикаций и пользователей", $tags="microservice")
+Container(adminService, "Сервис администрирования", "Container: микросервис", "Выдача спец. прав пользователям", $tags="microservice")
+Container(contentBrowsingService, "Сервис поиска и рекоммендаций", "Container: микросервис", "Поиск, фильтрация, расчет рекоммендаций. Учет предпочтений пользователей", $tags="microservice")
+Container(surveyResultService, "Сервис результатов опросов", "Container: микросервис", "Запись и чтение результатов опросов, выгрузка в файл", $tags="microservice")
+Container(analyticsService, "Сервис аналитики", "Container: микросервис", "Обработка результатов запросов", $tags="microservice")
+Container(commentsService, "Сервис комментариев", "Container: микросервис", "Добавление и просмотр комментариев", $tags="microservice")
+Container(reportService, "Сервис жалоб", "Container: микросервис", "Добавление, просмотр жалоб. Оспаривание жалоб", $tags="microservice")
+@enduml
