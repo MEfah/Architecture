@@ -1,0 +1,750 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "OpenSurvey - Система для проведения онлайн-опросов",
+      "description": "ASP.NET Core Web API приложение для проведения онлайн-опросов. В документации описана часть API, связанная с опросами и ответами на опросы",
+      "version": "v1"
+    },
+    "paths": {
+      "/surveys": {
+        "get": {
+          "tags": [
+            "Survey"
+          ],
+          "summary": "Получить список опросов",
+          "description": "Возвращает список опросов в соответствии с указанным размером и отступом. В будущем в теле запроса также будут передаваться опции сортировки и фильтрации",
+          "parameters": [
+            {
+              "name": "count",
+              "in": "query",
+              "description": "Количество опросов в возвращаемом списке",
+              "style": "form",
+              "schema": {
+                "type": "integer",
+                "format": "int32",
+                "default": 20
+              }
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Отступ возвращаемого списка опросов",
+              "style": "form",
+              "schema": {
+                "type": "integer",
+                "format": "int32",
+                "default": 0
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Запрос успешно выполнен",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Survey"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Survey"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Survey"
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Неверно указаны параметры запроса"
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "Survey"
+          ],
+          "summary": "Создать и опубликовать опрос",
+          "description": "Размещает новый опрос в системе. Для опроса генерируется GUID",
+          "requestBody": {
+            "description": "Опрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Запрос успешно выполнен",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Ошибка в теле запроса"
+            }
+          }
+        }
+      },
+      "/surveys/{publicationId}": {
+        "get": {
+          "tags": [
+            "Survey"
+          ],
+          "summary": "Получить опрос",
+          "description": "Возвращает опрос с указанным идентификатором",
+          "parameters": [
+            {
+              "name": "publicationId",
+              "in": "path",
+              "description": "GUID опроса",
+              "required": true,
+              "style": "simple",
+              "schema": {
+                "minLength": 36,
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Запрос успешно выполнен",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Запрос не найден",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "Survey"
+          ],
+          "summary": "Удалить опрос",
+          "description": "Удаляет опрос с указанным GUID",
+          "parameters": [
+            {
+              "name": "publicationId",
+              "in": "path",
+              "description": "GUID опроса",
+              "required": true,
+              "style": "simple",
+              "schema": {
+                "minLength": 36,
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Запрос успешно выполнен",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Опрос не найден",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/surveys/{publicationId}/answers/{userId}": {
+        "post": {
+          "tags": [
+            "Survey"
+          ],
+          "summary": "Добавить ответ на опрос",
+          "parameters": [
+            {
+              "name": "publicationId",
+              "in": "path",
+              "description": "GUID опроса",
+              "required": true,
+              "style": "simple",
+              "schema": {
+                "minLength": 36,
+                "type": "string"
+              }
+            },
+            {
+              "name": "userId",
+              "in": "path",
+              "description": "Идентификатор пользователя",
+              "required": true,
+              "style": "simple",
+              "schema": {
+                "minLength": 5,
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Ответ на опрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyAnswerDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyAnswerDTO"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyAnswerDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Запрос успешно выполнен",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Некорректно указаны параметры или тело запроса. Количество вопросов в ответе не совпадает с опросом",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Опрос или пользователь не найдены",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "409": {
+              "description": "Ответ на указанный опрос от указанного пользователя уже существует",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "Survey"
+          ],
+          "summary": "Изменить ответ на опрос",
+          "parameters": [
+            {
+              "name": "publicationId",
+              "in": "path",
+              "description": "GUID опроса",
+              "required": true,
+              "style": "simple",
+              "schema": {
+                "minLength": 36,
+                "type": "string"
+              }
+            },
+            {
+              "name": "userId",
+              "in": "path",
+              "description": "Идентификатор пользователя",
+              "required": true,
+              "style": "simple",
+              "schema": {
+                "minLength": 5,
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Новый ответ на опрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyAnswerDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyAnswerDTO"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyAnswerDTO"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Запрос успешно выполнен",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Некорректно указаны параметры или тело запроса. Количество вопросов в ответе не совпадает с опросом",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Опрос или пользователь не найдены",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "tags": [
+            "Survey"
+          ],
+          "summary": "Получить ответ на опрос",
+          "parameters": [
+            {
+              "name": "publicationId",
+              "in": "path",
+              "description": "GUID опроса",
+              "required": true,
+              "style": "simple",
+              "schema": {
+                "minLength": 36,
+                "type": "string"
+              }
+            },
+            {
+              "name": "userId",
+              "in": "path",
+              "description": "Идентификатор пользователя",
+              "required": true,
+              "style": "simple",
+              "schema": {
+                "minLength": 5,
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Запрос успешно выполнен",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Ответ пользователя на опрос не найден",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "Survey"
+          ],
+          "summary": "Удалить ответ на опрос",
+          "parameters": [
+            {
+              "name": "publicationId",
+              "in": "path",
+              "description": "GUID опроса",
+              "required": true,
+              "style": "simple",
+              "schema": {
+                "minLength": 36,
+                "type": "string"
+              }
+            },
+            {
+              "name": "userId",
+              "in": "path",
+              "description": "Идентификатор пользователя",
+              "required": true,
+              "style": "simple",
+              "schema": {
+                "minLength": 5,
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Запрос успешно выполнен",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SurveyAnswerDTO"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Ответ пользователя на опрос не найден",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "QuestionAnswerDTO": {
+          "type": "object",
+          "properties": {
+            "questionId": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "answer": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "Survey": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "nullable": true,
+              "readOnly": true
+            },
+            "name": {
+              "type": "string",
+              "nullable": true
+            },
+            "description": {
+              "type": "string",
+              "nullable": true
+            },
+            "questions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/SurveyQuestion"
+              },
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "SurveyAnswerDTO": {
+          "type": "object",
+          "properties": {
+            "publicationId": {
+              "type": "string",
+              "nullable": true,
+              "readOnly": true
+            },
+            "userId": {
+              "type": "string",
+              "nullable": true,
+              "readOnly": true
+            },
+            "questionAnswers": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/QuestionAnswerDTO"
+              },
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "SurveyQuestion": {
+          "type": "object",
+          "properties": {
+            "publicationId": {
+              "type": "string",
+              "nullable": true
+            },
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "text": {
+              "type": "string",
+              "nullable": true
+            },
+            "questionType": {
+              "$ref": "#/components/schemas/SurveyQuestionType"
+            },
+            "options": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "SurveyQuestionType": {
+          "enum": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    }
+  }
